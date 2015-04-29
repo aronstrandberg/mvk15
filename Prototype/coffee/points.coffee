@@ -1,5 +1,19 @@
 "use strict"
 
+# variables
+running = true #lolololololololololololololololololololololololololololololololololololololololololol
+lat = 59.347282
+lng = 18.070712
+id = 1
+step = 1
+n = 10
+xstep = 0
+ystep = 0
+xdir = 1
+ydir = 1
+interval = 5000
+
+
 map = undefined
 mapStyle = [
   {
@@ -24,32 +38,11 @@ mapOptions = {
   minZoom: 10
 }
 
-# variables
-lat = 59.347282
-lng = 18.070712
-id = 1
-running = true
-step = 1
-n = 10
-xstep = 0
-ystep = 0
-xdir = 1
-ydir = 1
-interval = 500
-
 styleFeature = (feature) ->
   # color of mag 1.0
-  low = [
-    134
-    91
-    50
-  ]
+  low = [134, 91, 50]
   # color of mag 6.0 and above
-  high = [
-    0
-    100
-    50
-  ]
+  high = [0, 100, 50]
   min = 1.0
   max = 12.0
   # fraction represents where the value sits between the min and max
@@ -119,15 +112,19 @@ addPoints = ->
   map.data.addGeoJson($.parseJSON(json))
 
   # pan to the new blip
-  map.panTo {
+  # todo: pan only when neccessary
+  map.panTo({
     lat: lat
     lng: lng
-  }
+  })
   return
 
 google.maps.event.addDomListener window, 'load', ->
   map = new (google.maps.Map)(document.getElementById('map-canvas'), mapOptions)
   map.data.setStyle styleFeature
+  map.data.addListener 'mouseover', (event) ->
+    document.getElementById('info').textContent = event.feature.k.velocity
+    return
   return
 
 

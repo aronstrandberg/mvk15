@@ -1,7 +1,7 @@
 $ ->
   running = true
-  width = document.documentElement.clientWidth
-  height = document.documentElement.clientHeight
+  width = document.documentElement.clientWidth * 0.3
+  height = document.documentElement.clientHeight * 0.8
 
   n = 100
   t = 10
