@@ -3,9 +3,9 @@ $ ->
   width = document.documentElement.clientWidth * 0.3
   height = document.documentElement.clientHeight * 0.8
 
-  n = 100
-  t = 10
-  data = [50]
+  n = 20
+  t = 500
+  window.data = [5]
 
   x = d3.scale.linear()
     .domain [0, data.length]
@@ -44,16 +44,16 @@ $ ->
         .attr 'width', w()
         .attr 'height', (d) -> y(d)
       .transition()
-        .duration t
+        .duration window.interval
         .attr 'x', (d, i) -> x(i)
     rect
       .transition()
-      .duration t
-      .attr 'x', (d, i) -> x(i)
-      .attr 'y', (d) -> height - y(d)
+        .duration window.interval
+        .attr 'x', (d, i) -> x(i)
+        .attr 'y', (d) -> height - y(d)
       # .attr 'width', (d, i) -> x(i)
-      .attr 'width', w()
-      .attr 'height', (d) -> y(d)
+        .attr 'width', w()
+        .attr 'height', (d) -> y(d)
     # rect.exit()
     # .transition()
     #     .duration(1000)
@@ -64,13 +64,6 @@ $ ->
   $('*').keypress ->
     running = !running
   setInterval ->
-    if !running
-      return
-    data.push Math.random() * n/2 + n/3
     x.domain [0, data.length]
-    #y.domain [0, d3.max(data)]
-    #i += 1
-    console.log data
-    console.log n
     redraw()
-  , t
+  , window.interval

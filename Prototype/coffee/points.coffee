@@ -11,8 +11,7 @@ xstep = 0
 ystep = 0
 xdir = 1
 ydir = 1
-interval = 5000
-
+window.interval = 50
 
 map = undefined
 mapStyle = [
@@ -74,6 +73,7 @@ addPoints = ->
     return
   # randomize blip color
   v = Math.random() * 11 + 1
+  window.data.push v
   # randomize distance travelled
   xstep = Math.random() / 1000
   ystep = Math.random() / 1000
