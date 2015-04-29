@@ -128,6 +128,9 @@ addPoints = ->
 google.maps.event.addDomListener window, 'load', ->
   map = new (google.maps.Map)(document.getElementById('map-canvas'), mapOptions)
   map.data.setStyle styleFeature
+  map.data.addListener 'mouseover', (event) ->
+    document.getElementById('info').textContent = event.feature.k.velocity
+    return
   return
 
 
