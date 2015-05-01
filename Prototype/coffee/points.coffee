@@ -131,4 +131,5 @@ google.maps.event.addDomListener window, 'load', ->
 $('*').keypress ->
   running = !running
   return
-$ setInterval(addPoints, interval)
+$ ->
+  setInterval(addPoints, window.interval)
