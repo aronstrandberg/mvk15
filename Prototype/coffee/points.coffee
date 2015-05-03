@@ -1,7 +1,7 @@
 "use strict"
 
 # variables
-running = true #lolololololololololololololololololololololololololololololololololololololololololol
+window.running = true
 lat = 59.347282
 lng = 18.070712
 id = 1
@@ -11,7 +11,7 @@ xstep = 0
 ystep = 0
 xdir = 1
 ydir = 1
-window.interval = 50
+window.interval = 500
 
 map = undefined
 mapStyle = [
@@ -54,7 +54,7 @@ styleFeature = (feature) ->
       strokeColor: "#eee"
       fillColor: color
       fillOpacity: 1
-      scale: 12
+      scale: 30
     }
     zIndex: Math.floor(feature.getProperty('id'))
   }
@@ -68,8 +68,22 @@ interpolateHsl = (lowHsl, highHsl, fraction) ->
     i++
   "hsl(#{color[0]}, #{color[1]}%, #{color[2]}%)"
 
+ajax = () ->
+  $.ajax
+    url: "lol.php"
+    type: "GET"
+    success: (data) ->
+      console.log "success"
+      json = JSON.parse(data)
+      return json
+    error: (error) ->
+      console.log "error"
+      console.log error
+      return error
+  false
+
 addPoints = ->
-  if !running
+  if !window.running
     return
   # randomize blip color
   v = Math.random() * 11 + 1
@@ -83,7 +97,6 @@ addPoints = ->
     xdir = Math.random() * 2 - 1
     ydir = Math.random() * 2 - 1
     n = Math.floor Math.random() * 15 + 1
-    # console.log n
 
   # make it travel!
   lat += xstep * xdir
@@ -92,13 +105,14 @@ addPoints = ->
   step++
 
   # add the blips
-  json = """
+  json1 = """
           {
             "type": "FeatureCollection",
             "metadata": {},
             "features": [
               {
-                "type": "Feature", "properties": {"velocity": #{v}},
+                "type": "Feature",
+                "properties": {"velocity": #{v}},
                 "geometry": {
                   "type": "Point",
                   "coordinates": [#{lng}, #{lat}]
@@ -109,7 +123,10 @@ addPoints = ->
             "bbox": [-179.463, -60.7674, -2.9, 178.4321, 67.0311, 609.13]
           }
           """
-  map.data.addGeoJson($.parseJSON(json))
+
+  console.log json1
+  console.log json2
+  # map.data.addGeoJson($.parseJSON(json))
 
   # pan to the new blip
   # todo: pan only when neccessary
@@ -128,8 +145,7 @@ google.maps.event.addDomListener window, 'load', ->
   return
 
 
-$('*').keypress ->
-  running = !running
-  return
+$('*').click ->
+  window.running = !window.running
 $ ->
   setInterval(addPoints, window.interval)

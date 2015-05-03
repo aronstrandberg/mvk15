@@ -1,10 +1,8 @@
 $ ->
-  running = true
   width = document.documentElement.clientWidth * 0.3
   height = document.documentElement.clientHeight * 0.8
 
   n = 20
-  t = 500
   window.data = [5]
 
   x = d3.scale.linear()
@@ -14,6 +12,10 @@ $ ->
   y = d3.scale.linear()
     .domain [0, n]
     .rangeRound [0, height]
+
+  # color = d3.scale.linear()
+  #   .domain [0, n]
+  #   .range colorbrewer.Reds[9]
 
   w = ->
     width/data.length
@@ -29,18 +31,19 @@ $ ->
       .append "svg:rect"
       .attr "x", (d, i) -> x(i)
       .attr "y", (d) -> height - y(d)
-      # .attr "width", (d, i) -> x(i)
       .attr 'width', w()
       .attr "height", (d) -> y(d)
+      # .attr "fill", c()
 
   redraw = ->
+    if !window.running
+      return
     rect = chart.selectAll('rect')
       .data(data)
     rect.enter()
         .insert('svg:rect', 'line')
         .attr 'x', (d, i) -> x(i)
         .attr 'y', (d) -> height - y(d)
-        # .attr 'width', (d, i) -> x(i)
         .attr 'width', w()
         .attr 'height', (d) -> y(d)
       .transition()
@@ -51,7 +54,6 @@ $ ->
         .duration window.interval
         .attr 'x', (d, i) -> x(i)
         .attr 'y', (d) -> height - y(d)
-      # .attr 'width', (d, i) -> x(i)
         .attr 'width', w()
         .attr 'height', (d) -> y(d)
     # rect.exit()
@@ -61,8 +63,8 @@ $ ->
     #   .remove()
     return
 
-  $('*').keypress ->
-    running = !running
+  $('*').click ->
+    window.running = !window.running
   setInterval ->
     x.domain [0, data.length]
     redraw()
