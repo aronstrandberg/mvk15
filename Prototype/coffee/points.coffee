@@ -196,7 +196,11 @@ google.maps.event.addDomListener window, 'load', ->
   map = new (google.maps.Map)(document.getElementById('map-canvas'), mapOptions)
   map.data.setStyle styleFeature
   map.data.addListener 'mouseover', (event) ->
-    document.getElementById('info').textContent = event.feature.getProperty('velocity')
+    document.getElementById('latitude').textContent  = event.feature.getGeometry().get().lat().round(5)
+    document.getElementById('longitude').textContent = event.feature.getGeometry().get().lng().round(5)
+    document.getElementById('velocity').textContent  = event.feature.getProperty("velocity").round(2)
+    document.getElementById('altitude').textContent  = event.feature.getProperty("altitide")
+    document.getElementById('lap').textContent       = event.feature.getProperty("lap")
     return
   return
 
