@@ -2,6 +2,8 @@
 
 # variables
 window.running = true
+window.interval = 1000
+
 lat = 59.347282
 lng = 18.070712
 id = 1
@@ -11,7 +13,6 @@ xstep = 0
 ystep = 0
 xdir = 1
 ydir = 1
-window.interval = 500
 
 map = undefined
 mapStyle = [
@@ -30,7 +31,7 @@ mapOptions = {
     lat: 59.346659
     lng: 18.072063
   }
-  zoom: 16
+  zoom: 18
   styles: mapStyle
   disableDefaultUI: true
   mapMaker: true
@@ -54,7 +55,7 @@ styleFeature = (feature) ->
       strokeColor: "#eee"
       fillColor: color
       fillOpacity: 1
-      scale: 30
+      scale: 15
     }
     zIndex: Math.floor(feature.getProperty('id'))
   }
@@ -68,66 +69,26 @@ interpolateHsl = (lowHsl, highHsl, fraction) ->
     i++
   "hsl(#{color[0]}, #{color[1]}%, #{color[2]}%)"
 
-ajax = () ->
+fetch = () ->
   $.ajax
     url: "lol.php"
     type: "GET"
     success: (data) ->
       console.log "success"
-      json = JSON.parse(data)
-      return json
+      console.log data
+      js = JSON.parse(data)
+      map.data.addGeoJson(js)
     error: (error) ->
       console.log "error"
       console.log error
-      return error
   false
 
 addPoints = ->
   if !window.running
     return
-  # randomize blip color
-  v = Math.random() * 11 + 1
-  window.data.push v
-  # randomize distance travelled
-  xstep = Math.random() / 1000
-  ystep = Math.random() / 1000
-
-  # randomize new dirction every now and then
-  if step % n == 0
-    xdir = Math.random() * 2 - 1
-    ydir = Math.random() * 2 - 1
-    n = Math.floor Math.random() * 15 + 1
-
-  # make it travel!
-  lat += xstep * xdir
-  lng += ystep * ydir
-  id++
-  step++
-
-  # add the blips
-  json1 = """
-          {
-            "type": "FeatureCollection",
-            "metadata": {},
-            "features": [
-              {
-                "type": "Feature",
-                "properties": {"velocity": #{v}},
-                "geometry": {
-                  "type": "Point",
-                  "coordinates": [#{lng}, #{lat}]
-                },
-                "id": #{id}
-              }
-            ],
-            "bbox": [-179.463, -60.7674, -2.9, 178.4321, 67.0311, 609.13]
-          }
-          """
-
-  console.log json1
-  console.log json2
-  # map.data.addGeoJson($.parseJSON(json))
-
+  # fetch new points 
+  fetch()
+  
   # pan to the new blip
   # todo: pan only when neccessary
   map.panTo({

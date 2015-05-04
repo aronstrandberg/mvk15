@@ -3,7 +3,10 @@
 function rand_float() {
   return mt_rand() / mt_getrandmax();
 }
-
+function random($min, $max) {
+  return $min + rand_float() * $max;
+}
+$random = "random";
 // If we haven't supplied an id, we probably want all of them.
 $id = -1;
 // If we supply an id we have got all points up till that id.
@@ -21,24 +24,39 @@ if (!$result) {
   exit;
 }
 
-$geoJson = '{ "type": "FeatureCollection",
-  "features":[';
+$geoJson = <<<HEREDOC
+{
+  "type": "FeatureCollection",
+  "metadata": {},
+  "features": [
+
+HEREDOC;
 
 while ($row = pg_fetch_assoc($result)) {
-  $geoJson .= '{
+$geoJson .= <<<HEREDOC
+    {
       "type": "Feature",
-      "geometry": {"type": "Point", "Coordinates": [' . $row['longitude'] . ', ' . $row['latitude'] . ']},
-      "properties": {"id": ' . $row['id'] . ', "timestamp": "' . $row['timestamp'] . '", "lap": ' . $row['lap'] . ', "velocity": '. (rand_float()*11+1) .'}
-    },';
-}
+      "geometry": {
+        "type": "Point",
+        "coordinates": [{$row["longitude"]}, {$row["latitude"]}]
+      },
+      "properties": {
+        "timestamp": "{$row["timestamp"]}",
+        "lap": {$row["lap"]},
+        "velocity": {$random(1, 11)}
+      },
+      "id": {$row["id"]}
+    },
 
+HEREDOC;
+}
 // Ignore last ',' since it's the last element in the "Feature" list.
+$geoJson = rtrim($geoJson);
 $geoJson = substr($geoJson, 0, -1);
-// Append the "bbox" attribute which is for some unknown reason needed for the gmaps API. 
+
 $geoJson .= '
-  ],
-    "bbox": [-179.463, -60.7674, -2.9, 178.4321, 67.0311, 609.13]
- }';
+  ]
+}';
 
 echo $geoJson;
 
