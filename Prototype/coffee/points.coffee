@@ -163,25 +163,27 @@ interpolateHsl = (lowHsl, highHsl, fraction) ->
   "hsl(#{color[0]}, #{color[1]}%, #{color[2]}%)"
 
 fetch = () ->
+  json = {}
   $.ajax
     url: "lol.php"
     type: "GET"
     success: (data) ->
-      console.log "success"
-      console.log data
-      js = JSON.parse(data)
-      map.data.addGeoJson(js)
+      json = JSON.parse(data)
+      console.log json
+      window.data = []
+      for point in json.features
+        do (point) ->
+          window.data.push point.properties.velocity
+      map.data.addGeoJson(json)
     error: (error) ->
-      console.log "error"
       console.log error
-  false
+  return json
 
 addPoints = ->
   if !window.running
     return
-  # fetch new points 
-  fetch()
-  
+  # fetch new points
+  json = fetch()
   # pan to the new blip
   # todo: pan only when neccessary
   map.panTo({
