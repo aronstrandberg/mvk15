@@ -1,5 +1,8 @@
 *.sass-cache
-*.js.map
 *.css.map
-js/
 *.css
+
+Prototype/js/
+js/
+*.js
+*.js.map
