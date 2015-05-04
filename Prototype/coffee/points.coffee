@@ -4,15 +4,6 @@
 window.running = true
 window.interval = 1000
 
-lat = 59.347282
-lng = 18.070712
-id = 1
-step = 1
-n = 10
-xstep = 0
-ystep = 0
-xdir = 1
-ydir = 1
 mapStyle = [{
     "featureType": "administrative",
     "elementType": "labels",
