@@ -209,3 +209,9 @@ $('*').click ->
   window.running = !window.running
 $ ->
   setInterval(addPoints, window.interval)
+
+Array.prototype.last = ->
+  return this[this.length-1]
+
+Number.prototype.round = (places) ->
+  return +(Math.round(this + "e+" + places)  + "e-" + places)
