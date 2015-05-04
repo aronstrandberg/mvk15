@@ -13,19 +13,121 @@ xstep = 0
 ystep = 0
 xdir = 1
 ydir = 1
+mapStyle = [{
+    "featureType": "administrative",
+    "elementType": "labels",
+    "stylers": [{
+        "visibility": "off"
+    }]
+}, {
+    "featureType": "administrative.country",
+    "elementType": "geometry.stroke",
+    "stylers": [{
+        "color": "#DCE7EB"
+    }]
+}, {
+    "featureType": "administrative.country",
+    "elementType": "labels.text",
+    "stylers": [{
+        "visibility": "on"
+    }, {
+        "color": "#000000"
+    }]
+}, {
+    "featureType": "administrative.country",
+    "elementType": "labels.icon",
+    "stylers": [{
+        "visibility": "on"
+    }, {
+        "color": "#000000"
+    }]
+}, {
+    "featureType": "administrative.province",
+    "elementType": "geometry.stroke",
+    "stylers": [{
+        "color": "#DCE7EB"
+    }]
+}, {
+    "featureType": "landscape",
+    "elementType": "geometry",
+    "stylers": [{
+        "visibility": "on"
+    }]
+}, {
+    "featureType": "landscape.natural",
+    "elementType": "labels",
+    "stylers": [{
+        "visibility": "off"
+    }]
+}, {
+    "featureType": "poi",
+    "elementType": "all",
+    "stylers": [{
+        "visibility": "off"
+    }]
+}, {
+    "featureType": "road",
+    "elementType": "all",
+    "stylers": [{
+        "visibility": "off"
+    }]
+}, {
+  "featureType": "road",
+  "elementType": "geometry",
+  "stylers": [{
+      "visibility": "simplified"
+    }]
+}, {
+    "featureType": "road",
+    "elementType": "labels",
+    "stylers": [{
+        "visibility": "off"
+    }]
+}, {
+    "featureType": "transit",
+    "elementType": "labels.icon",
+    "stylers": [{
+        "visibility": "off"
+    }]
+}, {
+    "featureType": "transit.line",
+    "elementType": "geometry",
+    "stylers": [{
+        "visibility": "off"
+    }]
+}, {
+    "featureType": "transit.line",
+    "elementType": "labels.text",
+    "stylers": [{
+        "visibility": "off"
+    }]
+}, {
+    "featureType": "transit.station.airport",
+    "elementType": "geometry",
+    "stylers": [{
+        "visibility": "off"
+    }]
+}, {
+    "featureType": "transit.station.airport",
+    "elementType": "labels",
+    "stylers": [{
+        "visibility": "off"
+    }]
+}, {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [{
+        "color": "#83888B"
+    }]
+}, {
+    "featureType": "water",
+    "elementType": "labels",
+    "stylers": [{
+        "visibility": "off"
+    }]
+}]
 
 map = undefined
-mapStyle = [
-  {
-    'featureType': 'all'
-    'elementType': 'all'
-    'stylers': [
-      {'invert_lightness': true}
-      {'saturation': -100}
-      {'lightness:': 15}
-    ]
-  }
-]
 mapOptions = {
   center: {
     lat: 59.346659
