@@ -3,6 +3,7 @@
 # variables
 window.running = true
 window.interval = 1000
+map = undefined
 
 mapStyle = [{
     "featureType": "administrative",
@@ -118,13 +119,12 @@ mapStyle = [{
     }]
 }]
 
-map = undefined
 mapOptions = {
   center: {
-    lat: 59.346659
-    lng: 18.072063
+    lat: 59.34714
+    lng: 18.07292
   }
-  zoom: 18
+  zoom: 17
   styles: mapStyle
   disableDefaultUI: true
   mapMaker: true
@@ -147,10 +147,10 @@ styleFeature = (feature) ->
       strokeWeight: 2
       strokeColor: "#eee"
       fillColor: color
-      fillOpacity: 1
+      fillOpacity: 0.95
       scale: 15
     }
-    zIndex: Math.floor(feature.getProperty('id'))
+    zIndex: feature.getProperty('id')
   }
 
 interpolateHsl = (lowHsl, highHsl, fraction) ->
