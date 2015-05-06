@@ -169,12 +169,15 @@ interpolateHsl = (lowHsl, highHsl, fraction) ->
     i++
   "hsl(#{color[0]}, #{color[1]}%, #{color[2]}%)"
 
-fetch = () ->
+fetch = ->
   json = {}
+  lap = 20
   $.ajax
     url: "lol.php"
     type: "GET"
-    success: (data) ->
+    data:
+      lap: lap
+    success: (data, code, xhr) ->
       json = JSON.parse(data)
       console.log json
       window.data = []
@@ -184,6 +187,12 @@ fetch = () ->
       map.data.addGeoJson(json)
     error: (error) ->
       console.log error
+    complete: (xhr) ->
+      console.log xhr.status
+    statusCode: 
+      203: ->
+        window.running = false
+
   return json
 
 addPoints = ->
