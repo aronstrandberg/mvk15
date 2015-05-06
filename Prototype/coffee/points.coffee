@@ -178,27 +178,36 @@ interpolateHsl = (lowHsl, highHsl, fraction) ->
     i++
   "hsl(#{color[0]}, #{color[1]}%, #{color[2]}%)"
 
+id = -1
+
 fetch = ->
   json = {}
-  lap = 20
+  lap = 19
   $.ajax
     url: "lol.php"
     type: "GET"
     data:
       lap: lap
+      id: id
     success: (data, code, xhr) ->
+      if xhr.status == 204
+        return
+
       json = JSON.parse(data)
+      if !json?
+        return
       window.data = reset()
       for point in json.features
         for property in ["id", "velocity", "altitude", "latitude", "longitude"]
           window.data[property].push point.properties[property]
+      id = json.features[json.features.length-1].properties.id
       map.data.addGeoJson(json)
     error: (error) ->
       console.log error
     complete: (xhr) ->
       console.log xhr.status
     statusCode: 
-      203: ->
+      205: ->
         window.running = false
 
   return json
@@ -210,10 +219,10 @@ addPoints = ->
   json = fetch()
   # pan to the new blip
   # todo: pan only when neccessary
-  map.panTo({
-    lat: lat
-    lng: lng
-  })
+  #map.panTo({
+  #  lat: lat
+  #  lng: lng
+  #})
   return
 
 google.maps.event.addDomListener window, 'load', ->
