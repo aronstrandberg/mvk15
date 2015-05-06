@@ -4,6 +4,7 @@ $ ->
 
   n = 20
   window.data = [5]
+  data = window.data.velocity
 
   x = d3.scale.linear()
     .domain [0, data.length]
@@ -36,8 +37,6 @@ $ ->
       # .attr "fill", c()
 
   redraw = ->
-    if !window.running
-      return
     rect = chart.selectAll('rect')
       .data(data)
     rect.enter()
@@ -62,10 +61,11 @@ $ ->
     #     .attr 'x', (d, i) -> x(i - 1)
     #   .remove()
     return
-
-  $('*').click ->
-    window.running = !window.running
-  setInterval ->
+  refresh = ->
+    data = window.data.velocity
+    console.log window.data.velocity
     x.domain [0, data.length]
+    y.domain [0, Math.max.apply(null, data)]
     redraw()
-  , window.interval
+  
+  setInterval(refresh, window.interval)

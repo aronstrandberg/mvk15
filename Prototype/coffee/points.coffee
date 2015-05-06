@@ -1,8 +1,17 @@
 "use strict"
 
+reset = ->
+  id: [],
+  velocity: [],
+  altitude: [],
+  latitude: [],
+  longitude: []
+
 # variables
 window.running = true
 window.interval = 1000
+window.data = reset()
+
 map = undefined
 
 mapStyle = [{
@@ -179,11 +188,10 @@ fetch = ->
       lap: lap
     success: (data, code, xhr) ->
       json = JSON.parse(data)
-      console.log json
-      window.data = []
+      window.data = reset()
       for point in json.features
-        do (point) ->
-          window.data.push point.properties.velocity
+        for property in ["id", "velocity", "altitude", "latitude", "longitude"]
+          window.data[property].push point.properties[property]
       map.data.addGeoJson(json)
     error: (error) ->
       console.log error
