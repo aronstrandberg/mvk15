@@ -7,6 +7,7 @@ if(isset($_GET['id'])) {
   $id = intval($_GET['id']);
 }
 
+// Magic number for the latest number.
 $latest = -1;
 
 // If we haven't supplied an lap, we probably want the latest.
@@ -18,15 +19,12 @@ if(isset($_GET['lap'])) {
 
 // Set up connection to database.
 // Otherwise return HTTP response code 418.
-/// Might be a good idea to find a more secure way to connect to the database
-/// set a better password.
-
 $con = pg_connect("host=137.135.248.194 port=5432 dbname=mvk user=azureuser password=password")
   or die(http_response_code(418));
 
 // Construct query.
 $query = "select * from location where (id > $id and lap = ";
-if ($lap == -1) {
+if ($lap == $latest) {
   $query .= "(select max(lap) from location)";
 } else {
   $query .= "$lap";
@@ -39,6 +37,15 @@ if (!$result) {
   exit;
 }
 
+// Num of tuples from the database.
+$num = pg_affected_rows($result);
+// We haven't got any new tuples.
+if ($num == 0) {
+  // Special response code, saying there's no more content.
+  http_response_code(204);
+  exit;
+}
+
 // The GeoJSON string to be constructed.
 $geoJson = <<< HERE
 {
@@ -46,11 +53,13 @@ $geoJson = <<< HERE
   "features":[ 
 HERE;
 
+// Convert tuples to GeoJSON.
 while ($row = pg_fetch_assoc($result)) {
+  // When we recieve a zeroed tuple, the drone has finished the lap.
   if ($row["timestamp"] == -1
    && $row["altitude"]  == -1
    && $row["speed"]     == -1) {
-    http_response_code(203);
+    http_response_code(205);
     break;
   }
   // Convert the SQL tuple into a JSON object.
@@ -76,6 +85,7 @@ HERE;
 }
 
 // Ignore last ',' since it's the last element in the "Feature" list.
+// A JSON thing...
 $geoJson = substr($geoJson, 0, -1);
 
 // Close the JSON string.
