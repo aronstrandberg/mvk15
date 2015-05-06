@@ -223,8 +223,10 @@ google.maps.event.addDomListener window, 'load', ->
     document.getElementById('latitude').textContent  = event.feature.getGeometry().get().lat().round(5)
     document.getElementById('longitude').textContent = event.feature.getGeometry().get().lng().round(5)
     document.getElementById('velocity').textContent  = event.feature.getProperty("velocity").round(2)
-    document.getElementById('altitude').textContent  = event.feature.getProperty("altitide")
+    document.getElementById('altitude').textContent  = event.feature.getProperty("altitude")
+    document.getElementById('timestamp').textContent  = new Date(event.feature.getProperty("timestamp")).toLocaleString()
     document.getElementById('lap').textContent       = event.feature.getProperty("lap")
+    document.getElementById('id').textContent       = event.feature.getProperty("id")
     return
   return
 
