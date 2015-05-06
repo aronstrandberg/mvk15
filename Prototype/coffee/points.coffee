@@ -141,16 +141,23 @@ styleFeature = (feature) ->
   # fraction represents where the value sits between the min and max
   fraction = (Math.min(feature.getProperty('velocity'), max) - min) / (max - min)
   color = interpolateHsl(low, high, fraction)
+  scale = 250/map.getZoom()
+  id = feature.getProperty("id")
+  z = id
+  if id % 5 != 0
+    color = "#ccc"
+    scale = 100/map.getZoom()
+    z = z/5
   return {
     icon: {
       path: google.maps.SymbolPath.CIRCLE
-      strokeWeight: 2
-      strokeColor: "#eee"
+      strokeWeight: 1.25
+      strokeColor: "#fff"
       fillColor: color
       fillOpacity: 0.95
-      scale: 15
+      scale: scale
     }
-    zIndex: feature.getProperty('id')
+    zIndex: z
   }
 
 interpolateHsl = (lowHsl, highHsl, fraction) ->
