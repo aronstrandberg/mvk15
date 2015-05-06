@@ -2,9 +2,9 @@ $ ->
   width = document.documentElement.clientWidth * 0.3
   height = document.documentElement.clientHeight * 0.8
 
-  n = 20
-  window.data = [5]
-  data = window.data.velocity
+  n = 4
+  datatype = "velocity"
+  data = window.data[datatype]
 
   x = d3.scale.linear()
     .domain [0, data.length]
@@ -34,7 +34,6 @@ $ ->
       .attr "y", (d) -> height - y(d)
       .attr 'width', w()
       .attr "height", (d) -> y(d)
-      # .attr "fill", c()
 
   redraw = ->
     rect = chart.selectAll('rect')
@@ -62,8 +61,7 @@ $ ->
     #   .remove()
     return
   refresh = ->
-    data = window.data.velocity
-    console.log window.data.velocity
+    data = window.data[datatype]
     x.domain [0, data.length]
     y.domain [0, Math.max.apply(null, data)]
     redraw()
