@@ -2,7 +2,6 @@
 *.css.map
 *.css
 
-Prototype/js/
 js/
 *.js
 *.js.map

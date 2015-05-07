@@ -1,5 +1,6 @@
 "use strict"
 
+# creates an empty data structure to hold data for plotting
 reset = ->
   id: [],
   velocity: [],
@@ -7,13 +8,17 @@ reset = ->
   latitude: [],
   longitude: []
 
-# variables
+# if window.running is false, we should not continue to fetch new data
 window.running = true
+# how often should we poll for new data?
 window.interval = 1000
+# creates an empty data structure to hold data for plotting
 window.data = reset()
 
+# creates the variable which will hold the Google maps object
 map = undefined
 
+# the google maps styling object. sets the map's color scheme and hides irrelevant metadata
 mapStyle = [{
     "featureType": "administrative",
     "elementType": "labels",
@@ -128,10 +133,11 @@ mapStyle = [{
     }]
 }]
 
+# configuration options for the map
 mapOptions = {
   center: {
-    lat: 59.34714
-    lng: 18.07292
+    lat: 59.34806
+    lng: 18.07142
   }
   zoom: 17
   styles: mapStyle
@@ -140,21 +146,23 @@ mapOptions = {
   minZoom: 10
 }
 
+# function that sets the styling of the points (color and size, primarily)
 styleFeature = (feature) ->
-  # color of mag 1.0
+  # color of 1.0
   low = [134, 91, 50]
-  # color of mag 6.0 and above
+  # color of 6.0 and above
   high = [0, 100, 50]
   min = 1.0
-  max = 12.0
+  max = 10.0
   # fraction represents where the value sits between the min and max
   fraction = (Math.min(feature.getProperty('velocity'), max) - min) / (max - min)
   color = interpolateHsl(low, high, fraction)
   scale = 250/map.getZoom()
   id = feature.getProperty("id")
   z = id
-  if id % 5 != 0
-    color = "#ccc"
+  # every 10th point is larger and has a higher z-index, so we modify the other 9
+  if id % 10 != 0
+    # color = "#ccc"
     scale = 100/map.getZoom()
     z = z/5
   return {
@@ -169,6 +177,7 @@ styleFeature = (feature) ->
     zIndex: z
   }
 
+# calculate a color based on the fraction
 interpolateHsl = (lowHsl, highHsl, fraction) ->
   color = []
   i = 0
@@ -180,73 +189,75 @@ interpolateHsl = (lowHsl, highHsl, fraction) ->
 
 id = -1
 
+# poll for new data and add new points to the map
 fetch = ->
+  if !window.running
+    return
   json = {}
-  lap = 19
+  # lap = 19
+  # jquery method to perform an AJAX request
   $.ajax
-    url: "lol.php"
+    # we send a GET request to our PHP script
+    url: "/php/main.php"
     type: "GET"
+    # we send the id of the latest recieved point as data to the request in order to only poll for new points
     data:
-      lap: lap
+      # lap: lap
       id: id
+    # callback function executed on a successful request
     success: (data, code, xhr) ->
+      # http code 204 means there is no new data: abort for now
       if xhr.status == 204
         return
-
+      # parse the json string into a javascript object
       json = JSON.parse(data)
+      # abort if json is null
       if !json?
         return
-      window.data = reset()
+      # window.data = reset()
+
+      # add the returned data to the data object. this is used to plot data in the graph
       for point in json.features
         for property in ["id", "velocity", "altitude", "latitude", "longitude"]
           window.data[property].push point.properties[property]
+      # update the id variable to the last point received
       id = json.features[json.features.length-1].properties.id
+      # adds the received points to the map using the google maps API
       map.data.addGeoJson(json)
+      # todo: pan only when neccessary
+      # map.panTo latest
+
+    # callback function executed when the request returns an error
     error: (error) ->
       console.log error
-    complete: (xhr) ->
-      console.log xhr.status
-    statusCode: 
+    # complete: (xhr) ->
+      # console.log xhr.status
+
+    # callback function that executes based on the request's http return code
+    statusCode:
       205: ->
         window.running = false
-
   return json
 
-addPoints = ->
-  if !window.running
-    return
-  # fetch new points
-  json = fetch()
-  # pan to the new blip
-  # todo: pan only when neccessary
-  #map.panTo({
-  #  lat: lat
-  #  lng: lng
-  #})
-  return
-
 google.maps.event.addDomListener window, 'load', ->
+  # creates the map object
   map = new (google.maps.Map)(document.getElementById('map-canvas'), mapOptions)
+  # set the data styling function to the styleFeature function defined above
   map.data.setStyle styleFeature
+  # add a mouse hover event that updates the infobox when hovering over a point
   map.data.addListener 'mouseover', (event) ->
     document.getElementById('latitude').textContent  = event.feature.getGeometry().get().lat().round(5)
     document.getElementById('longitude').textContent = event.feature.getGeometry().get().lng().round(5)
     document.getElementById('velocity').textContent  = event.feature.getProperty("velocity").round(2)
     document.getElementById('altitude').textContent  = event.feature.getProperty("altitude")
     document.getElementById('timestamp').textContent  = new Date(event.feature.getProperty("timestamp")).toLocaleString()
-    document.getElementById('lap').textContent       = event.feature.getProperty("lap")
-    document.getElementById('id').textContent       = event.feature.getProperty("id")
     return
   return
 
-
-$('*').click ->
-  window.running = !window.running
+# calls the fetch function to poll for new data at the specified interval
 $ ->
-  setInterval(addPoints, window.interval)
+  setInterval(fetch, window.interval)
 
-Array.prototype.last = ->
-  return this[this.length-1]
-
+# function to round numbers for display in the infobox
 Number.prototype.round = (places) ->
   return +(Math.round(this + "e+" + places)  + "e-" + places)

@@ -11,7 +11,7 @@ $ ->
     .range [0, width]
 
   y = d3.scale.linear()
-    .domain [0, n]
+    # .domain [0, n]
     .rangeRound [0, height]
 
   # color = d3.scale.linear()
@@ -54,6 +54,9 @@ $ ->
         .attr 'y', (d) -> height - y(d)
         .attr 'width', w()
         .attr 'height', (d) -> y(d)
+      .transition()
+        .duration 500
+        .attr 'fill', "#ff4444"
     # rect.exit()
     # .transition()
     #     .duration(1000)
