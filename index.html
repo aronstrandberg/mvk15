@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="/css/style.css">
+    <title>points</title>
+  </head>
+  <body>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/js/points.js"></script>
+    <script src="/js/graph.js"></script>
+    <div id="map-container">
+      <div id="map-canvas"></div>
+    </div>
+    <div id="chart-container">
+      <div id="chart"></div>
+      <div id="info">
+        <table>
+          <tr>
+            <th>latitude</th>
+            <td id="latitude"></td>
+          </tr>
+          <tr>
+            <th>longitude</th>
+            <td id="longitude"></td>
+          </tr>
+          <tr> 
+            <th>velocity</th>
+            <td id="velocity"></td>
+          </tr>
+          <tr>
+            <th>altitude</th>
+            <td id="altitude"></td>
+          </tr>
+          <tr> 
+            <th>timestamp</th>
+            <td id="timestamp"></td>
+          </tr>
+          <!--    
+          <tr>
+            <th>lap</th>
+            <td id="lap"></td>
+          </tr>
+          <tr>
+            <th>id</th>
+            <td id="id"></td>
+          </tr>
+          -->
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
