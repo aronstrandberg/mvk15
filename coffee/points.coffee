@@ -224,8 +224,6 @@ fetch = ->
       id = json.features[json.features.length-1].properties.id
       # adds the received points to the map using the google maps API
       map.data.addGeoJson(json)
-      # todo: pan only when neccessary
-      # map.panTo latest
 
     # callback function executed when the request returns an error
     error: (error) ->
@@ -252,6 +250,10 @@ google.maps.event.addDomListener window, 'load', ->
     document.getElementById('altitude').textContent  = event.feature.getProperty("altitude")
     document.getElementById('timestamp').textContent  = new Date(event.feature.getProperty("timestamp")).toLocaleString()
     return
+  map.data.addListener 'click', (event) ->
+    map.panTo
+      lat: event.feature.getGeometry().get().lat()
+      lng: event.feature.getGeometry().get().lng()
   return
 
 # calls the fetch function to poll for new data at the specified interval
