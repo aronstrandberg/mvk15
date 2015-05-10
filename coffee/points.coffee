@@ -2,10 +2,10 @@
 
 # creates an empty data structure to hold data for plotting
 reset = ->
-  id: [],
-  velocity: [],
-  altitude: [],
-  latitude: [],
+  id: []
+  velocity: []
+  altitude: []
+  latitude: []
   longitude: []
 
 # if window.running is false, we should not continue to fetch new data
