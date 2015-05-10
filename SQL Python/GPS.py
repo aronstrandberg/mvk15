@@ -35,9 +35,8 @@ class Connection:
         SPEED = speed
         ALT = alt
         LAP = "(SELECT MAX(id) FROM laps WHERE droneid = "+str(id)+")"
-        READ = "False"
-        QUERY = "INSERT INTO location(timestamp, longitude, latitude, speed, altitude, lap, read) VALUES(\'%s\',%s,%s,%s,%s,%s,%s);"\
-            %(TIME,LONG,LAT,SPEED, ALT, LAP,READ)
+        QUERY = "INSERT INTO location(timestamp, longitude, latitude, speed, altitude, lap) VALUES(\'%s\',%s,%s,%s,%s,%s);"\
+            %(TIME,LONG,LAT,SPEED, ALT, LAP)
         print QUERY
         s.sendline (QUERY)
 
